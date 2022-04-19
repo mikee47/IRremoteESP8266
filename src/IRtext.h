@@ -8,19 +8,12 @@
 #define IRTEXT_H_
 
 #include "i18n.h"
+#include <WString.h>
 
 // Constant text to be shared across all object files.
 // This means there is only one copy of the character/string/text etc.
 
-#ifdef ESP8266
-class __FlashStringHelper;
-#define IRTEXT_CONST_PTR_CAST(PTR)\
-    reinterpret_cast<const __FlashStringHelper*>(PTR)
-#define IRTEXT_CONST_PTR(NAME) const __FlashStringHelper* const NAME
-#else  // ESP8266
-#define IRTEXT_CONST_PTR_CAST(PTR) PTR
-#define IRTEXT_CONST_PTR(NAME) const char* const NAME
-#endif  // ESP8266
+#define IRTEXT_CONST_PTR(NAME) const FlashString& NAME;
 
 extern const char kTimeSep;
 extern IRTEXT_CONST_PTR(k0Str);

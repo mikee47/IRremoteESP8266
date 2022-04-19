@@ -16,6 +16,7 @@
 #include "IRremoteESP8266.h"
 #include "IRsend.h"
 #include "IRtext.h"
+#include <Data/CStringArray.h>
 
 // On the ESP8266 platform we need to use a set of ..._P functions
 // to handle the strings stored in the flash address space.
@@ -117,12 +118,9 @@ void serialPrintUint64(uint64_t input, uint8_t base) {
 /// @param[in] str A C-style string containing a protocol name or number.
 /// @return A decode_type_t enum. (decode_type_t::UNKNOWN if no match.)
 decode_type_t strToDecodeType(const char * const str) {
-  auto *ptr = reinterpret_cast<const char*>(kAllProtocolNamesStr);
-  uint16_t length = STRLEN(ptr);
-  for (uint16_t i = 0; length; i++) {
-    if (!STRCASECMP(str, ptr)) return (decode_type_t)i;
-    ptr += length + 1;
-    length = STRLEN(ptr);
+  int i = CStringArray(kAllProtocolNamesStr).indexOf(str);
+  if(i >= 0) {
+    return decode_type_t(i);
   }
   // Handle integer values of the type by converting to a string and back again.
   decode_type_t result = strToDecodeType(
@@ -143,17 +141,9 @@ String typeToString(const decode_type_t protocol, const bool isRepeat) {
   if (protocol > kLastDecodeType || protocol == decode_type_t::UNKNOWN) {
     result = kUnknownStr;
   } else {
-    auto *ptr = reinterpret_cast<const char*>(kAllProtocolNamesStr);
-    if (protocol > kLastDecodeType || protocol == decode_type_t::UNKNOWN) {
+    result = CStringArray(kAllProtocolNamesStr)[unsigned(protocol)];
+    if(!result) {
       result = kUnknownStr;
-    } else {
-      for (uint16_t i = 0; i <= protocol && STRLEN(ptr); i++) {
-        if (i == protocol) {
-          result = FPSTR(ptr);
-          break;
-        }
-        ptr += STRLEN(ptr) + 1;
-      }
     }
   }
   if (isRepeat) {

@@ -160,7 +160,7 @@ using _IRrecv::params_save;
 /// It signals to the library that capturing of IR data has stopped.
 /// @param[in] arg Unused. (ESP8266 Only)
 static void USE_IRAM_ATTR read_timeout(void *arg __attribute__((unused))) {
-  os_intr_lock();
+  noInterrupts();
 #endif  // ESP8266
 /// @cond IGNORE
 #if defined(ESP32)
@@ -173,7 +173,7 @@ static void USE_IRAM_ATTR read_timeout(void) {
 #endif  // ESP32
   if (params.rawlen) params.rcvstate = kStopState;
 #if defined(ESP8266)
-  os_intr_unlock();
+  interrupts();
 #endif  // ESP8266
 #if defined(ESP32)
   portEXIT_CRITICAL(&mux);
@@ -302,7 +302,7 @@ IRrecv::IRrecv(const uint16_t recvpin, const uint16_t bufsize,
         "Could not allocate memory for the primary IR buffer.\n"
         "Try a smaller size for CAPTURE_BUFFER_SIZE.\nRebooting!");
 #ifndef UNIT_TEST
-    ESP.restart();  // Mem alloc failure. Reboot.
+    System.restart();  // Mem alloc failure. Reboot.
 #endif
   }
   // If we have been asked to use a save buffer (for decoding), then create one.
@@ -315,7 +315,7 @@ IRrecv::IRrecv(const uint16_t recvpin, const uint16_t bufsize,
           "Could not allocate memory for the second IR buffer.\n"
           "Try a smaller size for CAPTURE_BUFFER_SIZE.\nRebooting!");
 #ifndef UNIT_TEST
-      ESP.restart();  // Mem alloc failure. Reboot.
+      System.restart();  // Mem alloc failure. Reboot.
 #endif
     }
   } else {

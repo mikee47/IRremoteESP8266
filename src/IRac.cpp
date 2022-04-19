@@ -52,16 +52,10 @@
 #include "ir_Voltas.h"
 #include "ir_Whirlpool.h"
 
-// On the ESP8266 platform we need to use a special version of string handling
-// functions to handle the strings stored in the flash address space.
-#ifndef STRCASECMP
-#if defined(ESP8266)
-#define STRCASECMP(LHS, RHS) \
-    strcasecmp_P(LHS, reinterpret_cast<const char*>(RHS))
-#else  // ESP8266
-#define STRCASECMP(LHS, RHS) strcasecmp(LHS, RHS)
-#endif  // ESP8266
-#endif  // STRCASECMP
+static int STRCASECMP(const char* LHS, const FlashString& RHS)
+{
+  return (RHS == LHS) ? 0 : 1;
+}
 
 /// Class constructor
 /// @param[in] pin Gpio pin to use when transmitting IR messages.

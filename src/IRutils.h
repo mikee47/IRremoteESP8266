@@ -14,6 +14,8 @@
 #include "IRremoteESP8266.h"
 #include "IRrecv.h"
 
+#undef setBits
+
 const uint8_t kNibbleSize = 4;
 const uint8_t kLowNibble = 0;
 const uint8_t kHighNibble = 4;

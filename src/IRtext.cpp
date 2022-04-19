@@ -11,28 +11,7 @@
 #include "IRremoteESP8266.h"
 #include "i18n.h"
 
-#ifndef PROGMEM
-#define PROGMEM  // Pretend we have the PROGMEM macro even if we really don't.
-#endif
-
-#ifndef FPSTR
-#define FPSTR(X) X  // Also pretend we have flash-string helper class cast.
-#endif
-
-#define IRTEXT_CONST_BLOB_NAME(NAME)\
-    NAME ## Blob
-
-#define IRTEXT_CONST_BLOB_DECL(NAME)\
-    const char IRTEXT_CONST_BLOB_NAME(NAME) [] PROGMEM
-
-#define IRTEXT_CONST_BLOB_PTR(NAME)\
-    IRTEXT_CONST_PTR(NAME) {\
-        IRTEXT_CONST_PTR_CAST(IRTEXT_CONST_BLOB_NAME(NAME)) }
-
-#define IRTEXT_CONST_STRING(NAME, VALUE)\
-    static IRTEXT_CONST_BLOB_DECL(NAME) { VALUE };\
-    IRTEXT_CONST_PTR(NAME) PROGMEM {\
-        IRTEXT_CONST_PTR_CAST(&(IRTEXT_CONST_BLOB_NAME(NAME))[0]) }
+#define IRTEXT_CONST_STRING(NAME, VALUE) DEFINE_FSTR(NAME, VALUE)
 
 // Common
 IRTEXT_CONST_STRING(kUnknownStr, D_STR_UNKNOWN);  ///< "Unknown"
@@ -281,7 +260,7 @@ IRTEXT_CONST_STRING(kDg11j191Str, D_STR_DG11J191);  ///< "DG11J191"
 
 // Protocol Names
 // Needs to be in decode_type_t order.
-IRTEXT_CONST_BLOB_DECL(kAllProtocolNamesStr) {
+DEFINE_FSTR(kAllProtocolNamesStr,
     D_STR_UNUSED "\x0"
     D_STR_RC5 "\x0"
     D_STR_RC6 "\x0"
@@ -397,7 +376,4 @@ IRTEXT_CONST_BLOB_DECL(kAllProtocolNamesStr) {
     D_STR_KELON168 "\x0"
     D_STR_HITACHI_AC296 "\x0"
     ///< New protocol strings should be added just above this line.
-    "\x0"  ///< This string requires double null termination.
-};
-
-IRTEXT_CONST_BLOB_PTR(kAllProtocolNamesStr);
+)
